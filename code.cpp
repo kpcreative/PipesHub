@@ -121,7 +121,8 @@ using namespace std;
 
 // we used chrono for time tracking
 using namespace chrono;
-bool completed = true;
+
+
 
 // we used this for proper locking mechanism...and we will use lock_guard..its a special type which dont nned to be unlocked it automatic gets unlocked
 mutex dataMutex;
@@ -381,7 +382,7 @@ int main()
     // this thread will get triggered after every 10s and whatever we have mentioned in maxdata we need to tranfer in this 10sec will be sent..
     thread flushThread([&om]()
                        {
-    while (completed) {
+    while (true) {
         this_thread::sleep_for(10s);
         om.resetSecondIfNeeded(); 
          // Exit condition: no more orders AND input loop is completed
@@ -401,7 +402,7 @@ int main()
 
         {
             lock_guard<mutex> lock(dataMutex);
-            cout << "\nRequest #" << (i + 1) << " (N/M/C/R): ";
+            cout << "\nRequest #" << " (N/M/C/R): ";
             cin >> cmd;
         }
 
@@ -419,7 +420,7 @@ int main()
             uint64_t targetOrderId;
             {
                 lock_guard<mutex> lock(dataMutex);
-                cout << "Enter the orderId to modify (e.g., 100-109): ";
+                cout << "Enter the orderId to modify : ";
                 cin >> targetOrderId;
             }
 
@@ -432,7 +433,7 @@ int main()
             uint64_t targetOrderId;
             {
                 lock_guard<mutex> lock(dataMutex);
-                cout << "Enter the orderId to cancel (e.g., 100-109): ";
+                cout << "Enter the orderId to cancel : ";
                 cin >> targetOrderId;
             }
             om.onData(OrderRequest{1, 0, 0, 'B', targetOrderId, RequestType::Cancel});
@@ -442,7 +443,7 @@ int main()
             uint64_t targetOrderId;
             {
                 lock_guard<mutex> lock(dataMutex);
-                cout << "Enter the orderId to see response (e.g., 100-109): ";
+                cout << "Enter the orderId to see response : ";
                 cin >> targetOrderId;
             }
             ResponseType type = (rand() % 2 == 0) ? ResponseType::Accept : ResponseType::Reject;

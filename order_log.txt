@@ -1,2 +1,0 @@
-OrderID: 200 | Response: Accept | Latency: 5575 ms
-[WARN] Unknown orderId response: 400
